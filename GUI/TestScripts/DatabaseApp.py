@@ -4,7 +4,7 @@ import sqlite3
 
 
 root = Tk()
-root.title("Parker's Test App")
+root.title("Parker's Test Database App")
 root.geometry("400x600")
 
 # Databases
@@ -107,28 +107,68 @@ def delete():
     conn.close()
 
 
+def save():
+    # Create a db / connect to one
+    conn = sqlite3.connect("address_book.db")
+    # Create cursor
+    c = conn.cursor()
+
+    record_id = delete_box.get()
+    c.execute(
+        """
+    UPDATE addresses SET
+    first_name = :first,
+    last_name = :last,
+    address = :address,
+    city = :city,
+    province = :province,
+    zipcode = :zipcode
+
+    WHERE oid = :oid
+    """,
+        {
+            "first": f_name_editor.get(),
+            "last": l_name_editor.get(),
+            "address": address_editor.get(),
+            "city": city_editor.get(),
+            "province": province_editor.get(),
+            "zipcode": zipcode_editor.get(),
+            "oid": record_id,
+        },
+    )
+
+    # Commit changes
+    conn.commit()
+    # Close connection
+    conn.close()
+
+    editor.destroy()
+
+
 # Create Function to Edit / Update a Record
 def edit():
+    global editor
     editor = Tk()
-    editor.title("Parker's Test App")
-    editor.geometry("400x600")
+    editor.title("Update A Record")
+    editor.geometry("400x200")
 
     # Create a db / connect to one
     conn = sqlite3.connect("address_book.db")
     # Create cursor
     c = conn.cursor()
 
+    record_id = delete_box.get()
     # Query the Database
-    c.execute("SELECT * FROM addresses")
+    c.execute("SELECT * FROM addresses WHERE oid= " + record_id)
     records = c.fetchall()
-    # print(records)
 
-    # Loop through results
-    print_records = ""
-    for record in records:
-        print_records += (
-            str(record[0]) + " " + str(record[1]) + " " + "\t" + str(record[6]) + "\n"
-        )
+    # Global Variables for textbox names
+    global f_name_editor
+    global l_name_editor
+    global address_editor
+    global city_editor
+    global province_editor
+    global zipcode_editor
 
     # Create Text Boxes
     f_name_editor = Entry(editor, width=30)
@@ -158,8 +198,17 @@ def edit():
     zipcode_label = Label(editor, text="Zipcode")
     zipcode_label.grid(row=5, column=0)
 
+    # Loop through results
+    for record in records:
+        f_name_editor.insert(0, record[0])
+        l_name_editor.insert(0, record[1])
+        address_editor.insert(0, record[2])
+        city_editor.insert(0, record[3])
+        province_editor.insert(0, record[4])
+        zipcode_editor.insert(0, record[5])
+
     # Create a Save Button to save edited Records
-    save_btn = Button(editor, text="Save Record", command=edit)
+    save_btn = Button(editor, text="Save Record", command=save)
     save_btn.grid(row=6, column=0, columnspan=2, pady=10, padx=20, ipadx=137)
 
 
