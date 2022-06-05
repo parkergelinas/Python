@@ -28,7 +28,7 @@ import pyautogui
 
 # Global Variables
 recoil_bool = False
-recoil_key = "y"
+recoil_key = "/"
 
 USUAL_FONT = "Arial"
 
@@ -50,11 +50,11 @@ class MainBody(tk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        toggles_lbl = ttk.Label(self, text="Temporary Text", font=(USUAL_FONT, 16))
+        toggles_lbl = ttk.Label(self, text="Recoil S/cript", font=(USUAL_FONT, 16))
         toggles_lbl.grid(row=0, column=0, sticky="W")
 
-        recoil_lbl = ttk.Label(self, text="Toggle Button:", font=(USUAL_FONT, 14))
-        recoil_lbl.grid(row=1, column=0, sticky="E")
+        ak_recoil_lbl = ttk.Label(self, text="AK Toggle Button:", font=(USUAL_FONT, 14))
+        ak_recoil_lbl.grid(row=1, column=0, sticky="E")
 
         self.recoil_bool_var = tk.IntVar()
         self.recoil_checkbox = tk.Checkbutton(
@@ -106,7 +106,7 @@ def recoil_loop():
             check_recoil_bool()
 
             if win32api.GetAsyncKeyState(0x01) != 0:
-                mouse.move(-5, 15, False)
+                mouse.move(-35, 75, False)
 
 
 if __name__ == "__main__":
