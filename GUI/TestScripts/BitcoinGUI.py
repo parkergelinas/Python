@@ -1,22 +1,27 @@
+import tkinter as tk
 from tkinter import *
 from PIL import ImageTk, Image
 import numpy as np
 import matplotlib.pyplot as plt
 import requests
-import mplfinance as mpf
+
 
 root = Tk()
-root.title("Parkers Test App")
-root.geometry("400x200")
+root.title("Crypto Graph TEST")
+
+base_url = "https://api.binance.com"
+path = "/api/v3/klines"
 
 
 def graph():
-    house_prices = np.random.normal(200000, 25000, 5000)
-    plt.hist(house_prices, 50)
+    r = requests.get(base_url + path, params={"symbol": "BTCUSDT", "interval": "1m"})
+    prices = r
+    plt.hist(prices, 50)
     plt.show()
 
 
 my_button = Button(root, text="Graph Button", command=graph)
 my_button.pack()
+
 
 root.mainloop()
